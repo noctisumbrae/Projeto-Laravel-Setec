@@ -1,0 +1,159 @@
+/* SETEC Fatec - estilos do módulo de participantes e inscrições (Equipe 2) */
+:root{
+  --vermelho:#a6192e; --vermelho-escuro:#7d1223; --grafite:#26282c; --cinza:#5f646b;
+  --borda:#dcdee2; --fundo:#f4f5f7; --branco:#fff;
+  --verde:#1d6b3f; --verde-bg:#e2f3e9; --amarelo:#7a5600; --amarelo-bg:#fdf1cf;
+  --vermelho-bg:#fbe3e6; --cinza-bg:#e9eaed; --raio:6px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--grafite);background:var(--fundo);line-height:1.5}
+a{color:var(--vermelho)}
+h1,h2,h3{line-height:1.2;margin:0 0 .5rem}
+h1{font-size:1.9rem} h2{font-size:1.4rem} h3{font-size:1.1rem}
+.container{max-width:980px;margin:0 auto;padding:0 1rem}
+main.container{padding-top:1.5rem;padding-bottom:3rem}
+.texto-suave{color:var(--cinza)} .mt{margin-top:1.25rem}
+
+/* topo */
+.topo{background:var(--vermelho);color:#fff}
+.topo__conteudo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem 1.5rem;padding-top:.75rem;padding-bottom:.75rem}
+.marca{color:#fff;text-decoration:none;font-weight:700;font-size:1.25rem}
+.marca small{font-weight:400;font-size:.8rem;margin-left:.5rem;opacity:.85}
+.menu{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem 1rem}
+.menu a,.menu__sair{color:#fff;text-decoration:none;padding:.25rem 0;border-bottom:2px solid transparent;font-size:.95rem}
+.menu a:hover,.menu a.ativo{border-bottom-color:#fff}
+.menu form{margin:0}
+.menu__sair{background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit}
+.menu__sair:hover{border-bottom-color:#fff}
+.rodape{border-top:1px solid var(--borda);padding:1rem 0;color:var(--cinza);font-size:.85rem;background:var(--branco)}
+
+/* alertas */
+.alerta{padding:.75rem 1rem;border-radius:var(--raio);margin-bottom:1rem;border:1px solid}
+.alerta--sucesso{background:var(--verde-bg);border-color:#9fd3b3;color:var(--verde)}
+.alerta--erro{background:var(--vermelho-bg);border-color:#e9a4ad;color:var(--vermelho-escuro)}
+.alerta--aviso{background:var(--amarelo-bg);border-color:#ecd48a;color:var(--amarelo)}
+.alerta ul{margin:.25rem 0 0 1.1rem;padding:0}
+
+/* cartões e grades */
+.cartao{background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio);padding:1.25rem;margin-bottom:1rem}
+.cartao--estreito{max-width:520px;margin-left:auto;margin-right:auto}
+.grade{display:grid;gap:1rem}
+.grade--3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.dado__rotulo{font-size:.85rem;color:var(--cinza)}
+.dado__valor{font-size:1.15rem;font-weight:600}
+
+/* apresentação da home */
+.destaque{background:var(--branco);border-left:6px solid var(--vermelho);border-radius:var(--raio);padding:1.5rem;margin-bottom:1.25rem;border-top:1px solid var(--borda);border-right:1px solid var(--borda);border-bottom:1px solid var(--borda)}
+.destaque h1{font-size:2.1rem}
+.acoes{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+
+/* botões */
+.botao{display:inline-block;padding:.55rem 1rem;border-radius:var(--raio);border:1px solid var(--vermelho);background:var(--vermelho);color:#fff;text-decoration:none;font-size:.95rem;font-family:inherit;cursor:pointer}
+.botao:hover{background:var(--vermelho-escuro)}
+.botao--claro{background:var(--branco);color:var(--vermelho)}
+.botao--claro:hover{background:var(--vermelho-bg)}
+.botao[disabled],.botao--desativado{opacity:.5;pointer-events:none}
+:focus-visible{outline:3px solid #1b5fc4;outline-offset:2px}
+
+/* formulários */
+.campo{margin-bottom:1rem}
+.campo label{display:block;font-weight:600;margin-bottom:.25rem}
+.campo input[type=text],.campo input[type=email],.campo input[type=password],.campo input[type=tel],.campo select{width:100%;padding:.55rem .7rem;border:1px solid #b8bcc3;border-radius:var(--raio);font-size:1rem;font-family:inherit;background:#fff}
+.campo input:disabled,.campo select:disabled{background:var(--cinza-bg)}
+.campo--erro input,.campo--erro select{border-color:var(--vermelho)}
+.campo__ajuda{font-size:.85rem;color:var(--cinza);margin-top:.2rem}
+.campo__erro{font-size:.9rem;color:var(--vermelho);margin-top:.2rem}
+.campo--linha{display:flex;align-items:center;gap:.5rem}
+.campo--linha label{margin:0;font-weight:400}
+.dois{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+@media (max-width:640px){.dois{grid-template-columns:1fr}}
+
+/* tabelas */
+.tabela-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:var(--branco)}
+th,td{padding:.6rem .75rem;border-bottom:1px solid var(--borda);text-align:left;vertical-align:top}
+th{background:#eceef1;font-size:.9rem}
+
+/* selos */
+.selo{display:inline-block;padding:.1rem .55rem;border-radius:999px;font-size:.8rem;font-weight:600;white-space:nowrap}
+.selo--verde{background:var(--verde-bg);color:var(--verde)}
+.selo--amarelo{background:var(--amarelo-bg);color:var(--amarelo)}
+.selo--vermelho{background:var(--vermelho-bg);color:var(--vermelho-escuro)}
+.selo--cinza{background:var(--cinza-bg);color:var(--cinza)}
+
+/* programação */
+.dia{margin:1.5rem 0 .5rem;padding-bottom:.25rem;border-bottom:2px solid var(--vermelho);text-transform:capitalize}
+.atividade{display:grid;grid-template-columns:110px 1fr auto;gap:.75rem;align-items:start;background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio);padding:.85rem 1rem;margin-bottom:.5rem}
+.atividade__hora{font-weight:700}
+.atividade__meta{font-size:.9rem;color:var(--cinza)}
+.atividade__titulo{font-weight:600;font-size:1.05rem}
+.atividade__titulo a{text-decoration:none}
+.atividade-opcao{cursor:pointer}
+.atividade-opcao input{margin-top:.35rem}
+.atividade-opcao.conflito{border-color:var(--vermelho);background:var(--vermelho-bg)}
+.atividade-opcao.bloqueada{opacity:.65;cursor:not-allowed}
+.atividade-opcao{grid-template-columns:24px 110px 1fr auto}
+@media (max-width:640px){.atividade,.atividade-opcao{grid-template-columns:1fr}}
+.filtro{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.filtro select{padding:.4rem;border-radius:var(--raio);border:1px solid #b8bcc3}
+.contador{position:sticky;bottom:0;background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio);padding:.75rem 1rem;margin-top:1rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;justify-content:space-between;align-items:center}
+.vazio{text-align:center;padding:2rem 1rem}
+
+/* Ajustes de formulário e acessibilidade */
+.campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="password"],
+.campo input[type="tel"],
+.campo input[type="date"],
+.campo input[type="number"],
+.campo select,
+.campo textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: .65rem .75rem;
+    border: 1px solid #b8bcc3;
+    border-radius: var(--raio);
+    background: var(--branco);
+    color: var(--grafite);
+    font: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.campo textarea { min-height: 110px; resize: vertical; }
+.campo input:focus, .campo select:focus, .campo textarea:focus {
+    border-color: var(--vermelho);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(166, 25, 46, .13);
+}
+.campo input[type="checkbox"], .atividade-opcao input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--vermelho);
+}
+.cartao--form { max-width: 720px; margin-left: auto; margin-right: auto; }
+.botao:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid #1b5fc4;
+    outline-offset: 2px;
+}
+.atividade-opcao { transition: border-color .15s ease, background .15s ease; }
+.atividade-opcao:hover:not(.bloqueada) { border-color: #b96b78; }
+.atividade-opcao.conflito { border: 2px solid var(--vermelho); }
+.tabela-wrap { border: 1px solid var(--borda); border-radius: var(--raio); }
+.tabela-wrap table { min-width: 620px; }
+th { color: #30343a; }
+[hidden] { display: none !important; }
+
+@media (max-width: 640px) {
+    .container { padding-left: .85rem; padding-right: .85rem; }
+    main.container { padding-top: 1rem; }
+    .topo__conteudo { align-items: flex-start; }
+    .marca { width: 100%; }
+    .marca small { display: block; margin-left: 0; }
+    .menu { gap: .5rem .85rem; }
+    .destaque { padding: 1.1rem; }
+    .destaque h1 { font-size: 1.65rem; }
+    .atividade, .atividade-opcao { grid-template-columns: 1fr; }
+    .contador { position: static; }
+    .contador > div:last-child { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .botao { text-align: center; }
+}
+.cabecalho-secao { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; margin:1.25rem 0 .75rem; }
