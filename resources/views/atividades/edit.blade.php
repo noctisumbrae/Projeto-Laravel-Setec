@@ -1,13 +1,13 @@
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Atividade</title>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Editar Atividade')
+
+@section('content')
+<section class="container">
     <h1>Editar Atividade</h1>
+
+    <p>Atualize os dados da palestra ou minicurso.</p>
 
     @if ($errors->any())
         <ul>
@@ -30,8 +30,12 @@
 
         <label for="tipo">Tipo:</label>
         <select id="tipo" name="tipo" required>
-            <option value="palestra" @selected(old('tipo', $atividade->tipo) == 'palestra')>Palestra</option>
-            <option value="minicurso" @selected(old('tipo', $atividade->tipo) == 'minicurso')>Minicurso</option>
+            <option value="palestra" @selected(old('tipo', $atividade->tipo) == 'palestra')>
+                Palestra
+            </option>
+            <option value="minicurso" @selected(old('tipo', $atividade->tipo) == 'minicurso')>
+                Minicurso
+            </option>
         </select>
 
         <label for="responsavel">Responsável:</label>
@@ -65,8 +69,10 @@
         </select>
 
         <button type="submit">Salvar Alterações</button>
-    </form>
 
-    <a href="{{ route('atividades.index') }}">Voltar</a>
-</body>
-</html>
+        <a href="{{ route('atividades.index') }}">
+            Voltar
+        </a>
+    </form>
+</section>
+@endsection
