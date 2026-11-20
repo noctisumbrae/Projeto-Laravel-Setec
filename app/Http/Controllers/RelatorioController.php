@@ -5,6 +5,8 @@ use App\Models\Inscricao;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RelatorioController extends Controller
 {
@@ -13,7 +15,7 @@ class RelatorioController extends Controller
         return view('relatorios.index');
     }
     
-    public function inscricoes(Request $request): View
+    public function inscricoes(Request $request): View|StreamedResponse
     {
         $dados = Inscricao::with(['user', 'atividades'])
             ->orderByDesc('created_at')
@@ -58,7 +60,7 @@ class RelatorioController extends Controller
         );
     }
     
-    public function atividades(Request $request)
+    public function atividades(Request $request): View|StreamedResponse
     {
         $linhas = Atividade::with(['edicao', 'local'])
             ->orderBy('inicio')
@@ -95,8 +97,7 @@ class RelatorioController extends Controller
         );
     }
 
-    
-    public function presencas(Request $request): View
+    public function presencas(Request $request): View|StreamedResponse
     {
         $dados = DB::table('inscricao_atividade as ia')
             ->join('inscricoes as i', 'i.id', '=', 'ia.inscricao_id')
@@ -156,7 +157,7 @@ class RelatorioController extends Controller
     }
 
     
-    public function cargaHoraria(Request $request): View
+    public function cargaHoraria(Request $request): View|StreamedResponse
     {
         $dados = DB::table('inscricoes as i')
             ->join('users as u', 'u.id', '=', 'i.user_id')
@@ -233,7 +234,7 @@ class RelatorioController extends Controller
         );
     }
 
-    public function certificados(Request $request): View
+    public function certificados(Request $request): View|StreamedResponse
     {
         $dados = DB::table('certificados as c')
             ->join('inscricoes as i', 'i.id', '=', 'c.inscricao_id')
@@ -288,9 +289,8 @@ class RelatorioController extends Controller
             $dados
         );
     }
-
     
-    public function ocupacao(Request $request): View
+    public function ocupacao(Request $request): View|StreamedResponse
     {
         $dados = Atividade::with(['edicao', 'local'])
             ->withCount([
@@ -355,13 +355,15 @@ class RelatorioController extends Controller
         array $colunas,
         array $dados,
         ?array $camposBusca = null
-    ): View {
+    ): View|StreamedResponse {
+
         $linhas = collect($dados);
         $valorBusca = $request->query('busca', '');
         $busca = is_string($valorBusca)
             ? trim($valorBusca)
             : '';
         $camposBusca ??= array_column($colunas, 'campo');
+
         if ($busca !== '') {
             $termo = mb_strtolower($busca);
             $linhas = $linhas->filter(
@@ -379,6 +381,56 @@ class RelatorioController extends Controller
                 }
             )->values();
         }
+
+        if ($request->query('exportar') === 'csv') {
+            $nomeArquivo = Str::slug($titulo)
+                . '-'
+                . now()->format('Ymd-His')
+                . '.csv';
+            return response()->streamDownload(
+                function () use ($colunas, $linhas) {
+                    $arquivo = fopen('php://output', 'w');
+                    if ($arquivo === false) {
+                        throw new \RuntimeException(
+                            'Não foi possível gerar o CSV.'
+                        );
+                    }
+                    fwrite($arquivo, "\xEF\xBB\xBF");
+                    fputcsv(
+                        $arquivo,
+                        array_column($colunas, 'titulo'),
+                        ';',
+                        '"',
+                        ''
+                    );
+
+                    foreach ($linhas as $linha) {
+                        $valores = [];
+                        foreach ($colunas as $coluna) {
+                            $campo = $coluna['campo'];
+                            $valor = (string) ($linha[$campo] ?? '');
+                            if (preg_match('/^\s*[=+\-@]/u', $valor)) {
+                                $valor = "'" . $valor;
+                            }
+                            $valores[] = $valor;
+                        }
+                        fputcsv(
+                            $arquivo,
+                            $valores,
+                            ';',
+                            '"',
+                            ''
+                        );
+                    }
+                    fclose($arquivo);
+                },
+                $nomeArquivo,
+                [
+                    'Content-Type' => 'text/csv; charset=UTF-8',
+                ]
+            );
+        }
+
         return view('relatorios.tabela', [
             'titulo' => $titulo,
             'descricao' => $descricao,
@@ -387,4 +439,5 @@ class RelatorioController extends Controller
             'busca' => $busca,
         ]);
     }
+
 }

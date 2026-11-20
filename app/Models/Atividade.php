@@ -32,13 +32,17 @@ class Atividade extends Model
     {
         return $this->belongsTo(Local::class);
     }
+    
     public function inscricoes(): BelongsToMany
-    {
+{
     return $this->belongsToMany(
         Inscricao::class,
-        'inscricao_atividade'
+        'inscricao_atividade',
+        'atividade_id',
+        'inscricao_id'
     )
     ->withPivot('status')
     ->withTimestamps();
-    }
+}
+
 }

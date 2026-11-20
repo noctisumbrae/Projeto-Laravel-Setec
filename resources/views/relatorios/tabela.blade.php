@@ -21,13 +21,20 @@
             type="search"
             name="busca"
             value="{{ $busca ?? '' }}"
-            placeholder="Pesquisar participante..."
+            placeholder="Pesquisar no relatório...""
             class="border rounded-lg px-4 py-2"
         >
         <button
             type="submit"
             class="bg-blue-700 text-white px-5 py-2 rounded-lg">
             Pesquisar
+        </button>
+        <button
+            type="submit"
+            name="exportar"
+            value="csv"
+            class="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-lg">
+            Exportar CSV
         </button>
         <a href="{{ url()->current() }}"
            class="border px-5 py-2 rounded-lg">
