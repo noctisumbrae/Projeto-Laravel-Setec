@@ -17,7 +17,7 @@ class RelatorioController extends Controller
     
     public function inscricoes(Request $request): View|StreamedResponse
     {
-        $dados = Inscricao::with(['user', 'atividades'])
+        $dados = Inscricao::with(['user', 'atividades','edicao'])
             ->orderByDesc('created_at')
             ->get()
             ->map(function (Inscricao $inscricao) {
@@ -40,6 +40,11 @@ class RelatorioController extends Controller
                     'data' => $inscricao->created_at
                         ? $inscricao->created_at->format('d/m/Y')
                         : '-',
+                    
+                    'edicao' => $inscricao->edicao?->nome ?? '-',
+                    'atividades_filtro' => $inscricao->atividades
+                        ->pluck('titulo')
+                        ->all(),
                 ];
             })
             ->all();
@@ -54,6 +59,7 @@ class RelatorioController extends Controller
                 ['titulo' => 'Atividade', 'campo' => 'atividade'],
                 ['titulo' => 'Situação', 'campo' => 'status'],
                 ['titulo' => 'Data', 'campo' => 'data'],
+                ['titulo' => 'Edição', 'campo' => 'edicao'],
             ],
             $dados,
             ['participante', 'email']
@@ -382,6 +388,173 @@ class RelatorioController extends Controller
             )->values();
         }
 
+        $campos = array_column($colunas, 'campo');
+
+        $temEdicao = in_array('edicao', $campos, true);
+        $temAtividade = in_array('atividade', $campos, true);
+
+        $campoSituacao = in_array('situacao', $campos, true)
+            ? 'situacao'
+            : (in_array('status', $campos, true) ? 'status' : null);
+
+        $campoData = in_array('data', $campos, true)
+            ? 'data'
+            : (in_array('emissao', $campos, true) ? 'emissao' : null);
+
+
+        $obterFiltro = static function (string $nome) use ($request): string {
+            $valor = $request->query($nome, '');
+
+            return is_string($valor) ? trim($valor) : '';
+        };
+
+        $edicao = $temEdicao ? $obterFiltro('edicao') : '';
+        $atividade = $temAtividade ? $obterFiltro('atividade') : '';
+        $situacao = $campoSituacao !== null
+            ? $obterFiltro('situacao')
+            : '';
+
+        $dataInicio = $obterFiltro('data_inicio');
+        $dataFim = $obterFiltro('data_fim');
+
+       
+        $validarData = static function (string $valor): string {
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
+                return '';
+            }
+            [$ano, $mes, $dia] = array_map(
+                'intval',
+                explode('-', $valor)
+            );
+            return checkdate($mes, $dia, $ano) ? $valor : '';
+        };
+
+        $dataInicio = $validarData($dataInicio);
+        $dataFim = $validarData($dataFim);
+
+       
+        $todosOsDados = collect($dados);
+
+        $valorValido = static function ($valor): bool {
+            return is_string($valor)
+                && trim($valor) !== ''
+                && $valor !== '-';
+        };
+
+        $opcoesEdicoes = $temEdicao
+            ? $todosOsDados
+                ->pluck('edicao')
+                ->filter($valorValido)
+                ->unique()
+                ->sort()
+                ->values()
+                ->all()
+            : [];
+
+        $opcoesAtividades = $temAtividade
+            ? $todosOsDados
+                ->flatMap(function (array $linha): array {
+                    return $linha['atividades_filtro']
+                        ?? [$linha['atividade'] ?? ''];
+                })
+                ->filter($valorValido)
+                ->unique()
+                ->sort()
+                ->values()
+                ->all()
+            : [];
+
+        $opcoesSituacoes = $campoSituacao !== null
+            ? $todosOsDados
+                ->pluck($campoSituacao)
+                ->filter($valorValido)
+                ->unique()
+                ->sort()
+                ->values()
+                ->all()
+            : [];
+
+        
+        $linhas = $linhas->filter(
+            function (array $linha) use (
+                $edicao,
+                $atividade,
+                $situacao,
+                $campoSituacao,
+                $campoData,
+                $dataInicio,
+                $dataFim
+            ): bool {
+
+                if (
+                    $edicao !== ''
+                    && ($linha['edicao'] ?? '') !== $edicao
+                ) {
+                    return false;
+                }
+
+                if ($atividade !== '') {
+                    $atividadesDaLinha = $linha['atividades_filtro']
+                        ?? [$linha['atividade'] ?? ''];
+
+                    if (!in_array($atividade, $atividadesDaLinha, true)) {
+                        return false;
+                    }
+                }
+
+                if (
+                    $situacao !== ''
+                    && $campoSituacao !== null
+                    && ($linha[$campoSituacao] ?? '') !== $situacao
+                ) {
+                    return false;
+                }
+
+                if (
+                    $campoData !== null
+                    && ($dataInicio !== '' || $dataFim !== '')
+                ) {
+                    $textoData = substr(
+                        (string) ($linha[$campoData] ?? ''),
+                        0,
+                        10
+                    );
+
+                    $data = \DateTimeImmutable::createFromFormat(
+                        '!d/m/Y',
+                        $textoData
+                    );
+
+                    if (
+                        !$data
+                        || $data->format('d/m/Y') !== $textoData
+                    ) {
+                        return false;
+                    }
+
+                    $dataISO = $data->format('Y-m-d');
+
+                    if ($dataInicio !== '' && $dataISO < $dataInicio) {
+                        return false;
+                    }
+
+                    if ($dataFim !== '' && $dataISO > $dataFim) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        )->values();
+
+        $filtros = [
+            'edicao' => $edicao,
+            'atividade' => $atividade,
+            'situacao' => $situacao,
+            'data_inicio' => $dataInicio,
+            'data_fim' => $dataFim,
+        ];
+
         if ($request->query('exportar') === 'csv') {
             $nomeArquivo = Str::slug($titulo)
                 . '-'
@@ -437,6 +610,17 @@ class RelatorioController extends Controller
             'colunas' => $colunas,
             'linhas' => $linhas,
             'busca' => $busca,
+
+            'temEdicao' => $temEdicao,
+            'temAtividade' => $temAtividade,
+            'campoSituacao' => $campoSituacao,
+            'campoData' => $campoData,
+
+            'opcoesEdicoes' => $opcoesEdicoes,
+            'opcoesAtividades' => $opcoesAtividades,
+            'opcoesSituacoes' => $opcoesSituacoes,
+
+            'filtros' => $filtros,
         ]);
     }
 
