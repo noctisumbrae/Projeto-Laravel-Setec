@@ -8,6 +8,7 @@
     <p><strong>Status:</strong> {{ ucfirst($edicao->status) }}</p>
     <p><strong>Período:</strong> {{ $edicao->data_inicio->format('d/m/Y') }} a {{ $edicao->data_fim->format('d/m/Y') }}</p>
     <p><strong>Descrição:</strong><br>{{ $edicao->descricao ?: 'Sem descrição.' }}</p>
+    <p><a href="{{ route('edicoes.regras-inscricao', $edicao) }}">Configurar regras de inscrição</a></p>
 
     <div style="display:flex;gap:8px;align-items:center;">
         @unless ($edicao->estaEncerrada())

@@ -22,12 +22,26 @@ class Edicao extends Model
         'data_fim',
         'descricao',
         'status',
+        'inscricao_interna_inicio',
+        'inscricao_interna_fim',
+        'inscricao_externa_inicio',
+        'inscricao_externa_fim',
+        'permite_inscricao_externa',
+        'limite_palestras',
+        'limite_minicursos',
+        'valor_inscricao',
     ];
 
     protected $casts = [
         'data_inicio' => 'date',
         'data_fim' => 'date',
         'ano' => 'integer',
+        'inscricao_interna_inicio' => 'datetime',
+        'inscricao_interna_fim' => 'datetime',
+        'inscricao_externa_inicio' => 'datetime',
+        'inscricao_externa_fim' => 'datetime',
+        'permite_inscricao_externa' => 'boolean',
+        'valor_inscricao' => 'decimal:2',
     ];
 
     public function scopeAtiva(Builder $query): Builder
