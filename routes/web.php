@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EdicaoController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SpeakerController;
 
 Route::get('/', function () {
     return view('home');
