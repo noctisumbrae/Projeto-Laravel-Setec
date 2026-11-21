@@ -42,7 +42,6 @@
             left: 10mm;
             right: 10mm;
             font-size: 36px;
-            font-weight: normal;
             color: #17395c;
         }
 
@@ -59,13 +58,13 @@
             top: 67mm;
             left: 10mm;
             right: 10mm;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
         }
 
         .descricao {
             position: absolute;
-            top: 85mm;
+            top: 88mm;
             left: 22mm;
             right: 22mm;
             font-size: 15px;
@@ -111,12 +110,12 @@
             margin-top: 3mm;
         }
 
-        .aviso {
+        .rodape {
             position: absolute;
             bottom: 6mm;
             left: 10mm;
             right: 10mm;
-            font-size: 9px;
+            font-size: 10px;
             line-height: 1.5;
             color: #777;
         }
@@ -129,7 +128,10 @@
 
         <div class="instituicao">
             Faculdade de Tecnologia de Presidente Prudente
-            <div>Semana de Tecnologia</div>
+
+            <div>
+                {{ $edicao ?? 'Semana de Tecnologia' }}
+            </div>
         </div>
 
         <div class="titulo">
@@ -145,22 +147,23 @@
         </div>
 
         <div class="descricao">
+
             participou das atividades da
 
             <strong>
-                Semana de Tecnologia da Fatec
-                Presidente Prudente
+                {{ $edicao ?? 'Semana de Tecnologia' }}
             </strong>,
 
             totalizando uma carga horária de
 
             <strong>
                 {{ intdiv($totalMinutos, 60) }}h
-                {{ $totalMinutos % 60 }}min
+                {{ sprintf('%02d', $totalMinutos % 60) }}min
             </strong>,
 
             considerando as atividades com
             presença confirmada.
+
         </div>
 
         <div class="assinatura-esquerda">
@@ -175,6 +178,7 @@
 
             <div>
                 Código de autenticidade:
+
                 <span class="codigo">
                     {{ $codigoValidacao }}
                 </span>
@@ -182,6 +186,7 @@
 
             <div class="endereco">
                 Verifique em:
+
                 <a href="{{ $urlValidacao }}">
                     {{ $urlValidacao }}
                 </a>
@@ -189,14 +194,30 @@
 
         </div>
 
-        <div class="aviso">
-            <div>
-                MODELO DEMONSTRATIVO - DOCUMENTO DE TESTE
-            </div>
+        <div class="rodape">
 
-            <div>
-                Não possui validade como certificado oficial.
-            </div>
+            @if ($demonstrativo ?? true)
+
+                <div>
+                    MODELO DEMONSTRATIVO - DOCUMENTO DE TESTE
+                </div>
+
+                <div>
+                    Não possui validade como certificado oficial.
+                </div>
+
+            @else
+
+                <div>
+                    Presidente Prudente, {{ $dataEmissao }}
+                </div>
+
+                <div>
+                    Documento gerado pelo sistema SETEC.
+                </div>
+
+            @endif
+
         </div>
 
     </div>
