@@ -90,3 +90,4 @@ Route::middleware([SomenteAdministrador::class])
         );
 
     });
+Route::post('/meus-certificados/{inscricao}/emitir', [\App\Http\Controllers\HistoricoCertificadoController::class, 'emitir'])->middleware('auth')->name('certificados.historico.emitir');
