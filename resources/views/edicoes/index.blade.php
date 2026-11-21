@@ -36,6 +36,7 @@
                     <td>{{ ucfirst($edicao->status) }}</td>
                     <td>
                         <a href="{{ route('edicoes.show', $edicao) }}">Consultar</a>
+                        | <a href="{{ route('edicoes.regras-inscricao', $edicao) }}">Regras de inscrição</a>
                         @unless ($edicao->estaEncerrada())
                             | <a href="{{ route('edicoes.edit', $edicao) }}">Editar</a>
                         @endunless

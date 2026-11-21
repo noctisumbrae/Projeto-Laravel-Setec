@@ -97,6 +97,32 @@ class EdicaoController extends Controller
         return redirect()->route('edicoes.show', $edicao)->with($resultado[0], $resultado[1]);
     }
 
+    public function regrasInscricao(Edicao $edicao): View
+    {
+        return view('edicoes.regras-inscricao', compact('edicao'));
+    }
+
+    public function atualizarRegrasInscricao(Request $request, Edicao $edicao): RedirectResponse
+    {
+        $dados = $request->validate([
+            'inscricao_interna_inicio' => ['nullable', 'date'],
+            'inscricao_interna_fim' => ['nullable', 'date', 'after_or_equal:inscricao_interna_inicio'],
+            'inscricao_externa_inicio' => ['nullable', 'date'],
+            'inscricao_externa_fim' => ['nullable', 'date', 'after_or_equal:inscricao_externa_inicio'],
+            'permite_inscricao_externa' => ['sometimes', 'boolean'],
+            'limite_palestras' => ['required', 'integer', 'min:0'],
+            'limite_minicursos' => ['required', 'integer', 'min:0'],
+            'valor_inscricao' => ['required', 'numeric', 'min:0', 'max:999999.99'],
+        ]);
+
+        $dados['permite_inscricao_externa'] = $request->boolean('permite_inscricao_externa');
+        $edicao->update($dados);
+
+        return redirect()
+            ->route('edicoes.show', $edicao)
+            ->with('success', 'Regras de inscrição salvas.');
+    }
+
     public function encerrar(Edicao $edicao): RedirectResponse
     {
         if (! $edicao->estaAtiva()) {
