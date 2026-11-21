@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EdicaoController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\AtividadeController;
 
@@ -20,3 +21,4 @@ Route::resource('locais', LocalController::class)
     ->parameters(['locais' => 'local']);
 Route::resource('atividades', AtividadeController::class)
     ->parameters(['atividades' => 'atividade']);
+Route::resource('speakers', SpeakerController::class);
