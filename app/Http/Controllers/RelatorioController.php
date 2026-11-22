@@ -69,21 +69,25 @@ class RelatorioController extends Controller
     public function atividades(Request $request): View|StreamedResponse
     {
         $linhas = Atividade::with(['edicao', 'local'])
-            ->orderBy('inicio')
-            ->get()
-            ->map(function (Atividade $atividade) {
-                return [
-                    'atividade' => $atividade->titulo,
-                    'tipo' => $atividade->tipo,
-                    'responsavel' => $atividade->responsavel,
-                    'edicao' => $atividade->edicao?->nome ?? '-',
-                    'local' => $atividade->local?->nome ?? '-',
-                    'data' => $atividade->inicio?->format('d/m/Y H:i') ?? '-',
-                    'duracao' => $atividade->duracao_minutos . ' min',
-                    'capacidade' => $atividade->capacidade,
-                ];
-            })
-            ->all();
+        ->orderBy('data')
+        ->orderBy('horario')
+        ->get()
+        ->map(function (Atividade $atividade) {
+            return [
+                'atividade' => $atividade->titulo,
+                'tipo' => $atividade->tipo,
+                'responsavel' => $atividade->responsavel,
+                'edicao' => $atividade->edicao?->nome ?? '-',
+                'local' => $atividade->local?->nome ?? '-',
+                'data' => $atividade->data
+                    ? $atividade->data->format('d/m/Y')
+                        . ' ' . substr((string) $atividade->horario, 0, 5)
+                    : '-',
+                'duracao' => $atividade->duracao . ' min',
+                'capacidade' => $atividade->capacidade,
+            ];
+        })
+        ->all();
 
         return $this->renderizarTabela(
             $request,
@@ -184,7 +188,7 @@ class RelatorioController extends Controller
                         AND ia.status = 'confirmada'
                         AND i.status = 'confirmada'
                         AND a.edicao_id = i.edicao_id
-                        THEN a.duracao_minutos
+                        THEN a.duracao
                         ELSE 0
                     END
                 ) as minutos
@@ -201,6 +205,7 @@ class RelatorioController extends Controller
                     END
                 ) as atividades_presentes
             ")
+
             ->groupBy('i.id', 'u.name', 'u.email', 'e.nome')
             ->orderBy('u.name')
             ->get()
@@ -306,7 +311,8 @@ class RelatorioController extends Controller
                         ->where('inscricoes.status', 'confirmada');
                 }
             ])
-            ->orderBy('inicio')
+            ->orderBy('data')
+            ->orderBy('horario')
             ->get()
             ->map(function (Atividade $atividade) {
 
