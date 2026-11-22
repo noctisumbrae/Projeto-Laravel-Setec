@@ -1,0 +1,231 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding: 30px;
+}
+
+h1 {
+    color: #243b53;
+    margin-bottom: 25px;
+}
+
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #243b53;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin: 12px 0 5px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 16px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+
+p {
+    line-height: 1.6;
+}
+
+ul {
+    padding: 15px 30px;
+    background-color: #fee2e2;
+    border-radius: 5px;
+    color: #991b1b;
+}
+
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.container > h1 {
+    margin-bottom: 10px;
+}
+
+.container > p {
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+td form {
+    display: inline;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+td a {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+td button {
+    background-color: #dc3545;
+    padding: 8px 12px;
+    margin: 0;
+}
+
+td button:hover {
+    background-color: #b02a37;
+}
+
+td {
+    vertical-align: middle;
+}
+
+table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.container > a {
+    display: inline-block;
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.container > a:hover {
+    background-color: #1d4ed8;
+    text-decoration: none;
+}
+
+
+.cabecalho {
+    background-color: #243b53;
+    padding: 20px 30px;
+    margin: -30px -30px 30px;
+}
+
+.cabecalho h1 {
+    color: white;
+    margin: 0 0 20px;
+}
+
+.menu {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.menu a {
+    display: inline-block;
+    padding: 10px 18px;
+    color: white;
+    background-color: #334e68;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    background-color: #486581;
+}
+
+
+.container > form {
+    max-width: 750px;
+    padding: 30px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.container > form input,
+.container > form select,
+.container > form textarea {
+    margin-bottom: 10px;
+}
+
+.container > form input:focus,
+.container > form select:focus,
+.container > form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.container > form button {
+    margin-right: 15px;
+}
+
+.container > form a {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: #64748b;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.container > form a:hover {
+    background-color: #475569;
+}
+
+
