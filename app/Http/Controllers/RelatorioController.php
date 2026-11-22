@@ -69,8 +69,7 @@ class RelatorioController extends Controller
     public function atividades(Request $request): View|StreamedResponse
     {
         $linhas = Atividade::with(['edicao', 'local'])
-        ->orderBy('data')
-        ->orderBy('horario')
+        ->orderBy('inicio')
         ->get()
         ->map(function (Atividade $atividade) {
             return [
@@ -79,11 +78,10 @@ class RelatorioController extends Controller
                 'responsavel' => $atividade->responsavel,
                 'edicao' => $atividade->edicao?->nome ?? '-',
                 'local' => $atividade->local?->nome ?? '-',
-                'data' => $atividade->data
-                    ? $atividade->data->format('d/m/Y')
-                        . ' ' . substr((string) $atividade->horario, 0, 5)
+                'data' => $atividade->inicio
+                    ? $atividade->inicio->format('d/m/Y H:i')
                     : '-',
-                'duracao' => $atividade->duracao . ' min',
+                'duracao' => $atividade->duracao_minutos . ' min',
                 'capacidade' => $atividade->capacidade,
             ];
         })
@@ -188,7 +186,7 @@ class RelatorioController extends Controller
                         AND ia.status = 'confirmada'
                         AND i.status = 'confirmada'
                         AND a.edicao_id = i.edicao_id
-                        THEN a.duracao
+                        THEN a.duracao_minutos
                         ELSE 0
                     END
                 ) as minutos
@@ -311,8 +309,7 @@ class RelatorioController extends Controller
                         ->where('inscricoes.status', 'confirmada');
                 }
             ])
-            ->orderBy('data')
-            ->orderBy('horario')
+            ->orderBy('inicio')
             ->get()
             ->map(function (Atividade $atividade) {
 
