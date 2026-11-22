@@ -2,15 +2,21 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use App\Policies\InscricaoPolicy;
+use App\Models\Inscricao;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        //
+    }
+
     public function boot(): void
     {
-        $this->routes(function () {
-            Route::middleware('web')->group(base_path('routes/web.php'));
+        Gate::inscricao(function (User $user, $inscricao) {
+            return (new InscricaoPolicy($user))->view($user, $inscricao);
         });
     }
 }
