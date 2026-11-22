@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Local extends Model
 {
@@ -17,4 +19,16 @@ class Local extends Model
         'tipo',
         'capacidade',
     ];
+
+    public function edicao(): BelongsTo
+    {
+        return $this->belongsTo(Edicao::class);
+    }
+
+    public function atividades(): BelongsToMany
+    {
+        return $this->belongsToMany(Atividade::class, 'inscricao_atividade')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EdicaoController;
+use App\Http\Controllers\InscricaoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\LocalController;
@@ -22,3 +23,6 @@ Route::resource('locais', LocalController::class)
 Route::resource('atividades', AtividadeController::class)
     ->parameters(['atividades' => 'atividade']);
 Route::resource('speakers', SpeakerController::class);
+
+Route::resource('inscricoes', InscricaoController::class)
+    ->parameters(['inscricoes' => 'inscricao']);

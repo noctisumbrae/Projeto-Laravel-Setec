@@ -57,4 +57,19 @@ class Edicao extends Model
     {
         return static::ativa()->first();
     }
+
+    public function inscricoes()
+    {
+        return $this->hasMany(Inscricao::class);
+    }
+
+    public function atividades()
+    {
+        return $this->hasMany(Atividade::class);
+    }
+
+    public function locais()
+    {
+        return $this->hasMany(Local::class);
+    }
 }
