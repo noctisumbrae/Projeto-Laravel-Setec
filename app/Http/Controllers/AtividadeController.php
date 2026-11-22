@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AtividadeRequest;
 use App\Models\Atividade;
+use App\Models\Edicao;
 use App\Models\Local;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -12,9 +13,8 @@ class AtividadeController extends Controller
 {
     public function index(): View
     {
-        $atividades = Atividade::with('local')
-            ->orderBy('data')
-            ->orderBy('horario')
+        $atividades = Atividade::with(['local', 'edicao'])
+            ->orderBy('inicio')
             ->paginate(10);
 
         return view('atividades.index', compact('atividades'));
@@ -23,8 +23,9 @@ class AtividadeController extends Controller
     public function create(): View
     {
         $locais = Local::orderBy('nome')->get();
+        $edicoes = Edicao::orderByDesc('ano')->get();
 
-        return view('atividades.create', compact('locais'));
+        return view('atividades.create', compact('locais', 'edicoes'));
     }
 
     public function store(AtividadeRequest $request): RedirectResponse
@@ -35,10 +36,10 @@ class AtividadeController extends Controller
             ->route('atividades.index')
             ->with('success', 'Atividade cadastrada com sucesso!');
     }
-    
+
     public function show(Atividade $atividade): View
     {
-        $atividade->load('local');
+        $atividade->load(['local', 'edicao']);
 
         return view('atividades.show', compact('atividade'));
     }
@@ -46,14 +47,13 @@ class AtividadeController extends Controller
     public function edit(Atividade $atividade): View
     {
         $locais = Local::orderBy('nome')->get();
+        $edicoes = Edicao::orderByDesc('ano')->get();
 
-        return view('atividades.edit', compact('atividade', 'locais'));
+        return view('atividades.edit', compact('atividade', 'locais', 'edicoes'));
     }
 
-    public function update(
-        AtividadeRequest $request,
-        Atividade $atividade
-    ): RedirectResponse {
+    public function update(AtividadeRequest $request, Atividade $atividade): RedirectResponse
+    {
         $atividade->update($request->validated());
 
         return redirect()

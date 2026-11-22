@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Local extends Model
 {
@@ -20,15 +19,8 @@ class Local extends Model
         'capacidade',
     ];
 
-    public function edicao(): BelongsTo
+    public function atividades(): HasMany
     {
-        return $this->belongsTo(Edicao::class);
-    }
-
-    public function atividades(): BelongsToMany
-    {
-        return $this->belongsToMany(Atividade::class, 'inscricao_atividade')
-            ->withPivot('status')
-            ->withTimestamps();
+        return $this->hasMany(Atividade::class);
     }
 }

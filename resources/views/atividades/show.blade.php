@@ -13,11 +13,11 @@
     <p><strong>Descrição:</strong> {{ $atividade->descricao }}</p>
     <p><strong>Tipo:</strong> {{ ucfirst($atividade->tipo) }}</p>
     <p><strong>Responsável:</strong> {{ $atividade->responsavel }}</p>
-    <p><strong>Data:</strong> {{ $atividade->data->format('d/m/Y') }}</p>
-    <p><strong>Horário:</strong> {{ substr($atividade->horario, 0, 5) }}</p>
-    <p><strong>Duração:</strong> {{ $atividade->duracao }} minutos</p>
+    <p><strong>Início:</strong> {{ $atividade->inicio?->format('d/m/Y H:i') ?? 'Não informado' }}</p>
+    <p><strong>Duração:</strong> {{ $atividade->duracao_minutos }} minutos</p>
     <p><strong>Capacidade:</strong> {{ $atividade->capacidade }} pessoas</p>
-    <p><strong>Local:</strong> {{ $atividade->local->nome }}</p>
+    <p><strong>Local:</strong> {{ $atividade->local?->nome ?? 'Não informado' }}</p>
+    <p><strong>Edição:</strong> {{ $atividade->edicao?->nome ?? 'Não informado' }}</p>
 
     <a href="{{ route('atividades.edit', $atividade) }}">Editar</a>
     <a href="{{ route('atividades.index') }}">Voltar</a>

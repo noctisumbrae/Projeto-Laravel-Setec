@@ -20,8 +20,7 @@
             <tr>
                 <th>Título</th>
                 <th>Tipo</th>
-                <th>Data</th>
-                <th>Horário</th>
+                <th>Início</th>
                 <th>Local</th>
                 <th>Ações</th>
             </tr>
@@ -32,8 +31,7 @@
                 <tr>
                     <td>{{ $atividade->titulo }}</td>
                     <td>{{ ucfirst($atividade->tipo) }}</td>
-                    <td>{{ $atividade->data->format('d/m/Y') }}</td>
-                    <td>{{ substr($atividade->horario, 0, 5) }}</td>
+                    <td>{{ $atividade->inicio?->format('d/m/Y H:i') ?? 'Não informado' }}</td>
                     <td>{{ $atividade->local?->nome ?? 'Não informado' }}</td>
                     <td>
                         <a href="{{ route('atividades.show', $atividade) }}">
@@ -56,7 +54,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6">
+                    <td colspan="5">
                         Nenhuma atividade cadastrada.
                     </td>
                 </tr>

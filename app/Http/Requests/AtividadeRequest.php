@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Atividade;
+use App\Models\Edicao;
 use App\Models\Local;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
@@ -19,13 +20,13 @@ class AtividadeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'edicao_id' => ['required', 'integer', 'exists:edicoes,id'],
             'titulo' => ['required', 'string', 'max:255'],
             'descricao' => ['required', 'string'],
             'tipo' => ['required', Rule::in(['palestra', 'minicurso'])],
             'responsavel' => ['required', 'string', 'max:255'],
-            'data' => ['required', 'date'],
-            'horario' => ['required', 'date_format:H:i'],
-            'duracao' => ['required', 'integer', 'min:1'],
+            'inicio' => ['required', 'date'],
+            'duracao_minutos' => ['required', 'integer', 'min:1'],
             'capacidade' => ['required', 'integer', 'min:1'],
             'local_id' => ['required', 'exists:locals,id'],
         ];
@@ -37,69 +38,62 @@ class AtividadeRequest extends FormRequest
             'required' => 'O campo :attribute é obrigatório.',
             'titulo.max' => 'O título deve ter no máximo 255 caracteres.',
             'tipo.in' => 'Selecione palestra ou minicurso.',
-            'horario.date_format' => 'Informe um horário válido.',
-            'duracao.min' => 'A duração deve ser maior que zero.',
+            'duracao_minutos.min' => 'A duração deve ser maior que zero.',
             'capacidade.min' => 'A capacidade deve ser maior que zero.',
             'local_id.exists' => 'O local selecionado não existe.',
+            'edicao_id.exists' => 'A edição selecionada não existe.',
         ];
     }
 
     public function after(): array
     {
         return [
-            function (Validator $validator) {
+            function (Validator $validator): void {
                 if ($validator->errors()->isNotEmpty()) {
                     return;
                 }
 
-                $local = Local::find($this->input('local_id'));
+                $local = Local::find($this->integer('local_id'));
+                $edicao = Edicao::find($this->integer('edicao_id'));
 
-                if (!$local) {
+                if (! $local || ! $edicao) {
                     return;
                 }
 
-                $capacidade = (int) $this->input('capacidade');
+                $inicio = Carbon::parse($this->input('inicio'));
+                $fim = $inicio->copy()->addMinutes($this->integer('duracao_minutos'));
 
-                if ($capacidade > $local->capacidade) {
+                if ($inicio->toDateString() < $edicao->data_inicio->toDateString()
+                    || $inicio->toDateString() > $edicao->data_fim->toDateString()) {
+                    $validator->errors()->add(
+                        'inicio',
+                        'A data da atividade deve estar dentro do período da edição selecionada.'
+                    );
+                }
+
+                if ($this->integer('capacidade') > $local->capacidade) {
                     $validator->errors()->add(
                         'capacidade',
                         'A capacidade da atividade não pode ultrapassar a capacidade do local.'
                     );
-                    return;
                 }
 
-                $data = $this->input('data');
-                $horario = $this->input('horario');
-                $duracao = (int) $this->input('duracao');
-
-                $inicio = Carbon::parse("$data $horario");
-                $fim = $inicio->copy()->addMinutes($duracao);
-
                 $atividadeAtual = $this->route('atividade');
-
-                $idAtual = $atividadeAtual instanceof Atividade
-                    ? $atividadeAtual->id
-                    : null;
+                $idAtual = $atividadeAtual instanceof Atividade ? $atividadeAtual->id : null;
 
                 $atividades = Atividade::where('local_id', $local->id)
+                    ->where('edicao_id', $edicao->id)
                     ->when($idAtual, fn ($query) => $query->where('id', '!=', $idAtual))
-                    ->whereBetween('data', [
-                        $inicio->copy()->subDay()->toDateString(),
-                        $fim->toDateString()
-                    ])
+                    ->whereBetween('inicio', [$inicio->copy()->subDay(), $fim])
                     ->get();
 
                 foreach ($atividades as $atividade) {
-                    $inicioExistente = Carbon::parse(
-                        $atividade->data->format('Y-m-d') . ' ' . $atividade->horario
-                    );
+                    $fimExistente = $atividade->inicio->copy()
+                        ->addMinutes($atividade->duracao_minutos);
 
-                    $fimExistente = $inicioExistente->copy()
-                        ->addMinutes($atividade->duracao);
-
-                    if ($inicio->lt($fimExistente) && $fim->gt($inicioExistente)) {
+                    if ($inicio->lt($fimExistente) && $fim->gt($atividade->inicio)) {
                         $validator->errors()->add(
-                            'horario',
+                            'inicio',
                             'Já existe uma atividade neste local durante o horário informado.'
                         );
                         break;

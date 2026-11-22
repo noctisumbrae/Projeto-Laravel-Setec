@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('atividades', function (Blueprint $table) {
             $table->id();
             $table->foreignId('edicao_id')->constrained('edicoes')->cascadeOnDelete();
-            $table->foreignId('local_id')->constrained('locais');
+            $table->foreignId('local_id')->constrained('locals');
             $table->string('titulo');
             $table->text('descricao')->nullable();
             $table->string('tipo', 20);                 // palestra | minicurso

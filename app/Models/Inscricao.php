@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -61,14 +60,14 @@ class Inscricao extends Model
     }
 
     /** Retorna as atividades selecionadas (pivot status = 'selecionada'). */
-    public function atividadesSelecionadas(): Collection
+    public function atividadesSelecionadas(): BelongsToMany
     {
         return $this->atividades()
             ->wherePivot('status', self::ATIVIDADE_SELECIONADA);
     }
 
     /** Retorna as atividades confirmadas (pivot status = 'confirmada'). */
-    public function atividadesConfirmadas(): Collection
+    public function atividadesConfirmadas(): BelongsToMany
     {
         return $this->atividades()
             ->wherePivot('status', self::ATIVIDADE_CONFIRMADA);

@@ -68,8 +68,4 @@ class Edicao extends Model
         return $this->hasMany(Atividade::class);
     }
 
-    public function locais()
-    {
-        return $this->hasMany(Local::class);
-    }
 }
