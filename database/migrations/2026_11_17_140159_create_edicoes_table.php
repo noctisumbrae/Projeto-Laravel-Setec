@@ -1,10 +1,14 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('edicoes', function (Blueprint $table) {
@@ -14,13 +18,13 @@ return new class extends Migration
             $table->date('data_inicio');
             $table->date('data_fim');
             $table->text('descricao')->nullable();
-            $table->string('status', 20)
-                  ->default('planejada')
-                  ->index();
-
+            $table->string('status', 20)->default('planejada')->index();
             $table->timestamps();
         });
     }
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('edicoes');

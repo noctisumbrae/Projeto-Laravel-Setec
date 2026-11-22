@@ -9,6 +9,7 @@ class Edicao extends Model
     public const PLANEJADA = 'planejada';
     public const ATIVA = 'ativa';
     public const ENCERRADA = 'encerrada';
+    public const STATUS = [self::PLANEJADA, self::ATIVA, self::ENCERRADA];
     protected $table = 'edicoes';
     protected $fillable = [
         'nome',
