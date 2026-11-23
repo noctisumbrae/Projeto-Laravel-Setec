@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * MODEL - Inscrição de um participante em uma edição (EQUIPE 2).
+ */
 class Inscricao extends Model
 {
     public const PENDENTE   = 'pendente';
@@ -39,38 +42,12 @@ class Inscricao extends Model
             ->withTimestamps();
     }
 
-    // ---------- Regras de negócio ----------
+    // ---------- Regras ----------
 
     /** A seleção de atividades só pode ser alterada enquanto a inscrição está pendente. */
     public function editavel(): bool
     {
         return $this->status === self::PENDENTE;
-    }
-
-    /** Retorna verdadeiro se a inscrição já foi confirmada (pagamento aprovado). */
-    public function confirmada(): bool
-    {
-        return $this->status === self::CONFIRMADA;
-    }
-
-    /** Retorna verdadeiro se a inscrição foi cancelada. */
-    public function cancelada(): bool
-    {
-        return $this->status === self::CANCELADA;
-    }
-
-    /** Retorna as atividades selecionadas (pivot status = 'selecionada'). */
-    public function atividadesSelecionadas(): BelongsToMany
-    {
-        return $this->atividades()
-            ->wherePivot('status', self::ATIVIDADE_SELECIONADA);
-    }
-
-    /** Retorna as atividades confirmadas (pivot status = 'confirmada'). */
-    public function atividadesConfirmadas(): BelongsToMany
-    {
-        return $this->atividades()
-            ->wherePivot('status', self::ATIVIDADE_CONFIRMADA);
     }
 
     // ---------- Apoio às views ----------
@@ -93,12 +70,13 @@ class Inscricao extends Model
         };
     }
 
-    public function getBadgeStatusAttribute(): string
+    /** @return array{0: string, 1: string} [rótulo, classe CSS] */
+    public static function apresentacaoStatusAtividade(string $status): array
     {
-        return match ($this->status) {
-            self::CONFIRMADA => 'success',
-            self::CANCELADA  => 'danger',
-            default          => 'warning',
+        return match ($status) {
+            self::ATIVIDADE_CONFIRMADA => ['Vaga confirmada', 'selo--verde'],
+            self::ATIVIDADE_LOTADA     => ['Lotou: escolha outra', 'selo--vermelho'],
+            default                    => ['Selecionada (sem vaga garantida)', 'selo--amarelo'],
         };
     }
 }
