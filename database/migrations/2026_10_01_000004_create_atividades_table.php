@@ -4,13 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+/** PROVISÓRIO - pertence à EQUIPE 1. Ver comentário em create_edicoes_table. */
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('atividades', function (Blueprint $table) {
             $table->id();
             $table->foreignId('edicao_id')->constrained('edicoes')->cascadeOnDelete();
-            $table->foreignId('local_id')->constrained('locals');
+            $table->foreignId('local_id')->constrained('locais');
             $table->string('titulo');
             $table->text('descricao')->nullable();
             $table->string('tipo', 20);                 // palestra | minicurso

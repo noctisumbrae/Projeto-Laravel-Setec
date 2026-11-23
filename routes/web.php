@@ -1,99 +1,56 @@
 <?php
 
-use App\Http\Controllers\AtividadeController;
-use App\Http\Controllers\CertificadoController;
-use App\Http\Controllers\EdicaoController;
-use App\Http\Controllers\HistoricoCertificadoController;
+/*
+|--------------------------------------------------------------------------
+| Rotas da EQUIPE 2 - Participantes e inscriÃ§Ãµes
+|--------------------------------------------------------------------------
+| Arquivo separado para evitar conflitos de merge no Git com as outras equipes.
+| O arquivo Ã© carregado por routes/web.php no projeto integrado Laravel 12.
+|
+*/
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InscricaoAtividadeController;
 use App\Http\Controllers\InscricaoController;
-use App\Http\Controllers\LocalController;
-use App\Http\Controllers\RelatorioController;
-use App\Http\Controllers\SpeakerController;
-use App\Http\Controllers\ValidacaoCertificadoController;
-use App\Http\Middleware\SomenteAdministrador;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ParticipanteController;
+use App\Http\Controllers\ProgramacaoController;
+use App\Http\Controllers\RecuperacaoSenhaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+// ---------- Ãrea pÃºblica ----------
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/programacao', [ProgramacaoController::class, 'index'])->name('programacao.index');
+Route::get('/programacao/{atividade}', [ProgramacaoController::class, 'show'])->name('programacao.show');
 
-Route::resource('edicoes', EdicaoController::class)
-    ->parameters(['edicoes' => 'edicao'])
-    ->except(['destroy']);
+// ---------- Visitantes (nÃ£o logados) ----------
+Route::middleware('guest')->group(function () {
+    Route::get('/cadastro', [ParticipanteController::class, 'create'])->name('participantes.create');
+    Route::post('/cadastro', [ParticipanteController::class, 'store'])->name('participantes.store');
 
-Route::patch('edicoes/{edicao}/ativar', [EdicaoController::class, 'ativar'])
-    ->name('edicoes.ativar');
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:5,1')->name('login.store');
 
-Route::patch('edicoes/{edicao}/encerrar', [EdicaoController::class, 'encerrar'])
-    ->name('edicoes.encerrar');
-
-Route::resource('locais', LocalController::class)
-    ->parameters(['locais' => 'local']);
-
-Route::resource('atividades', AtividadeController::class)
-    ->parameters(['atividades' => 'atividade']);
-
-Route::resource('speakers', SpeakerController::class);
-
-Route::resource('inscricoes', InscricaoController::class)
-    ->parameters(['inscricoes' => 'inscricao']);
-
-Route::get(
-    '/validar-certificado',
-    [ValidacaoCertificadoController::class, 'index']
-)
-    ->middleware('throttle:30,1')
-    ->name('certificados.validar');
-
-Route::middleware('auth')->group(function () {
-    Route::get(
-        '/meus-certificados',
-        [HistoricoCertificadoController::class, 'index']
-    )->name('certificados.historico');
-
-    Route::get(
-        '/meus-certificados/{certificado}/pdf',
-        [HistoricoCertificadoController::class, 'baixar']
-    )->name('certificados.historico.pdf');
+    Route::get('/esqueci-minha-senha', [RecuperacaoSenhaController::class, 'formularioEsqueci'])->name('password.request');
+    Route::post('/esqueci-minha-senha', [RecuperacaoSenhaController::class, 'enviarLink'])->middleware('throttle:3,1')->name('password.email');
+    // O nome "password.reset" Ã© exigido pelo e-mail padrÃ£o do Laravel.
+    Route::get('/redefinir-senha/{token}', [RecuperacaoSenhaController::class, 'formularioRedefinir'])->name('password.reset');
+    Route::post('/redefinir-senha', [RecuperacaoSenhaController::class, 'redefinir'])->name('password.update');
 });
 
-if (app()->environment('local')) {
-    Route::get(
-        '/certificados',
-        [CertificadoController::class, 'index']
-    )->name('certificados.index');
+// ---------- Ãrea exclusiva do participante ----------
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-    Route::get(
-        '/certificados/modelo',
-        [CertificadoController::class, 'modelo']
-    )->name('certificados.modelo');
+    Route::get('/meu-perfil', [ParticipanteController::class, 'edit'])->name('perfil.edit');
+    Route::put('/meu-perfil', [ParticipanteController::class, 'update'])->name('perfil.update');
 
-    Route::get(
-        '/certificados/pdf',
-        [CertificadoController::class, 'baixarPdf']
-    )->name('certificados.pdf');
-}
+    // O parÃ¢metro precisa ser informado, pois o plural "inscricoes" nÃ£o singulariza corretamente.
+    Route::resource('inscricoes', InscricaoController::class)
+        ->only(['index', 'create', 'store', 'show'])
+        ->parameters(['inscricoes' => 'inscricao']);
 
-Route::middleware([SomenteAdministrador::class])
-    ->group(function () {
-        Route::get('/relatorios', [RelatorioController::class, 'index'])
-            ->name('relatorios.index');
-        Route::get('/relatorios/inscricoes', [RelatorioController::class, 'inscricoes'])
-            ->name('relatorios.inscricoes');
-        Route::get('/relatorios/atividades', [RelatorioController::class, 'atividades'])
-            ->name('relatorios.atividades');
-        Route::get('/relatorios/presencas', [RelatorioController::class, 'presencas'])
-            ->name('relatorios.presencas');
-        Route::get('/relatorios/carga-horaria', [RelatorioController::class, 'cargaHoraria'])
-            ->name('relatorios.carga-horaria');
-        Route::get('/relatorios/certificados', [RelatorioController::class, 'certificados'])
-            ->name('relatorios.certificados');
-        Route::get('/relatorios/ocupacao', [RelatorioController::class, 'ocupacao'])
-            ->name('relatorios.ocupacao');
-    });
+    Route::get('/inscricoes/{inscricao}/atividades', [InscricaoAtividadeController::class, 'edit'])->name('inscricoes.atividades.edit');
+    Route::put('/inscricoes/{inscricao}/atividades', [InscricaoAtividadeController::class, 'update'])->name('inscricoes.atividades.update');
+});
 
-Route::post(
-    '/meus-certificados/{inscricao}/emitir',
-    [HistoricoCertificadoController::class, 'emitir']
-)
-    ->middleware('auth')
-    ->name('certificados.historico.emitir');
