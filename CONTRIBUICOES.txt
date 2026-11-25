@@ -1,0 +1,34 @@
+----------->>>>>  Projeto SETEC - Equipe 5   <<<<<-----------
+
+
+--> Mariana Amaral Scolari
+
+- Implementação do cálculo de carga horária com base nas inscrições e presenças dos participantes.
+- Desenvolvimento das telas de certificados.
+- Implementação da emissão e do registro de certificados no banco de dados.
+- Desenvolvimento do modelo e da geração de certificados em PDF.
+- Implementação do histórico e download de certificados por participante.
+- Controle de acesso e prevenção de emissões duplicadas.
+- Integração da emissão com a funcionalidade de validação desenvolvida pela Lívia.
+- Desenvolvimento de testes automatizados e documentação do módulo.
+
+--> Lívia Maria Velasco da Silva
+
+- Desenvolvimento dos relatórios administrativos integrados ao banco de dados.
+- Implementação dos relatórios de inscrições, atividades, presenças, carga horária, certificados e ocupação.
+- Implementação da exportação dos relatórios em CSV.
+- Desenvolvimento dos filtros de pesquisa dos relatórios.
+- Implementação da funcionalidade de validação de certificados por administradores, utilizando o código de autenticidade.
+- Realização de testes das funcionalidades desenvolvidas.
+
+
+
+
+
+-- Considerações sobre a integração
+
+Durante o desenvolvimento, foram identificadas diferenças entre as versões do Laravel e as estruturas de banco de dados utilizadas pelas equipes. Por esse motivo, optamos por manter a compatibilidade entre os módulos desenvolvidos pela Equipe 5.
+
+Foram realizados testes com diferentes participantes, inscrições, edições e cargas horárias, incluindo a integração entre a emissão e a validação dos certificados. Os 11 testes automatizados do módulo de certificados foram executados com sucesso, totalizando 52 verificações.
+
+A integração com o login real e com os demais módulos ainda depende da compatibilização das estruturas utilizadas pelas outras equipes. Entretanto, as funcionalidades da Equipe 5 foram desenvolvidas utilizando uma estrutura de banco de dados compartilhada entre as integrantes.
