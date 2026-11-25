@@ -194,31 +194,33 @@
 
         </div>
 
-        <div class="rodape">
 
-            @if ($demonstrativo ?? true)
+	<div class="rodape">
 
-                <div>
-                    MODELO DEMONSTRATIVO - DOCUMENTO DE TESTE
-                </div>
+	    <div>
+	        Presidente Prudente, {{ now()->format('d/m/Y') }}
+	    </div>
 
-                <div>
-                    Não possui validade como certificado oficial.
-                </div>
+	    @if ($demonstrativo ?? true)
 
-            @else
+	        <div>
+	            MODELO DEMONSTRATIVO - DOCUMENTO DE TESTE
+	        </div>
 
-                <div>
-                    Presidente Prudente, {{ $dataEmissao }}
-                </div>
+	        <div>
+	            Não possui validade como certificado oficial.
+	        </div>
 
-                <div>
-                    Documento gerado pelo sistema SETEC.
-                </div>
+	    @else
 
-            @endif
+	        <div>
+	            Documento gerado pelo sistema SETEC.
+	        </div>
 
-        </div>
+	    @endif
+
+	</div>
+
 
     </div>
 

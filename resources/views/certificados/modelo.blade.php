@@ -80,6 +80,13 @@
         font-size: 14px;
     }
 
+    /* Data atual do certificado */
+    .certificado-data {
+        font-size: 14px;
+        color: #444;
+        margin-top: 28px;
+    }
+
     .certificado-aviso {
         font-size: 12px;
         color: #777;
@@ -151,7 +158,7 @@
                 totalizando uma carga horária de
                 <strong>
                     {{ intdiv($totalMinutos, 60) }}h
-                    {{ $totalMinutos % 60 }}min
+                    {{ sprintf('%02d', $totalMinutos % 60) }}min
                 </strong>,
                 considerando as atividades com
                 presença confirmada.
@@ -169,6 +176,11 @@
                     Representante da Instituição
                 </div>
 
+            </div>
+
+            <div class="certificado-data">
+                Presidente Prudente,
+                {{ now('America/Sao_Paulo')->format('d/m/Y') }}
             </div>
 
             <div class="certificado-aviso">
