@@ -1,0 +1,171 @@
+:root {
+    --site-ink: #26282c;
+    --site-ground: #f4f5f7;
+    --site-surface: #ffffff;
+    --site-line: #dcdee2;
+    --site-accent: #a6192e;
+}
+
+html { background: var(--site-ground); }
+
+body {
+    min-height: 100vh;
+    color: var(--site-ink);
+    background: var(--site-ground);
+}
+
+.site-skip {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 10;
+    padding: .6rem .85rem;
+    color: #fff;
+    background: var(--site-ink);
+}
+
+.site-skip:focus { top: 1rem; }
+.topo { border-bottom: 1px solid rgba(255, 255, 255, .2); }
+.topo__conteudo { min-height: 4.5rem; }
+
+.marca {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .1rem;
+    line-height: 1.1;
+}
+
+.marca span { letter-spacing: .04em; }
+.marca small { margin: 0; font-size: .74rem; }
+.menu { gap: .2rem .85rem; }
+
+.menu a,
+.menu__sair {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+}
+
+.menu form { padding: 0; background: transparent; }
+.site-main { min-height: calc(100vh - 8.5rem); }
+
+.page-shell {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+}
+
+.page-shell > .container,
+.page-shell > main.container {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pagina-cabecalho {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.pagina-cabecalho h1 { margin-bottom: .3rem; }
+.pagina-cabecalho p { margin: 0; }
+.inscricao-lista { display: grid; gap: .8rem; }
+
+.inscricao-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+}
+
+.inscricao-linha h2 { margin: .45rem 0 .2rem; font-size: 1.15rem; }
+.inscricao-linha p { margin: 0; }
+.inscricao-linha__acoes { flex: 0 0 auto; }
+.cartao--form { margin: 0; }
+.cartao--form > h2 { margin-bottom: .25rem; }
+.cartao--form > p { margin-top: 0; }
+
+.acoes--fim {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1.25rem;
+}
+
+.vazio .botao { margin-top: 1rem; }
+
+/* Compatibilidade visual para views antigas que usam nomes do Bootstrap. */
+.btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: .5rem .85rem;
+    border: 1px solid var(--site-line);
+    border-radius: var(--raio);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary,
+.btn-success { color: #fff; border-color: var(--site-accent); background: var(--site-accent); }
+.btn-danger { color: #fff; border-color: #8c1d2c; background: #8c1d2c; }
+.btn-secondary { color: var(--site-ink); background: #eceef1; }
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-danger { color: var(--site-accent); background: transparent; }
+.btn-link { border: 0; background: transparent; }
+.btn-sm { min-height: 36px; padding: .35rem .6rem; font-size: .88rem; }
+
+.card {
+    border: 1px solid var(--site-line);
+    border-radius: var(--raio);
+    background: var(--site-surface);
+}
+
+.card-body { padding: 1.25rem; }
+.form-label { display: block; margin-bottom: .3rem; font-weight: 600; }
+
+.form-select,
+.form-control {
+    width: 100%;
+    min-height: 44px;
+    padding: .65rem .75rem;
+    border: 1px solid #b8bcc3;
+    border-radius: var(--raio);
+    color: var(--site-ink);
+    background: #fff;
+    font: inherit;
+}
+
+.badge {
+    display: inline-block;
+    padding: .18rem .55rem;
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+.bg-success { color: var(--verde); background: var(--verde-bg); }
+.bg-warning { color: var(--amarelo); background: var(--amarelo-bg); }
+.bg-danger { color: var(--vermelho-escuro); background: var(--vermelho-bg); }
+.table { margin-top: 1rem; }
+.table-striped tbody tr:nth-child(even) { background: #fafafa; }
+.text-warning { color: var(--amarelo); }
+.text-danger { color: var(--vermelho-escuro); }
+.rodape { min-height: 4rem; }
+
+@media (max-width: 640px) {
+    .page-shell { padding: 1.25rem .85rem 3rem; }
+    .pagina-cabecalho,
+    .inscricao-linha { align-items: stretch; flex-direction: column; }
+    .inscricao-linha__acoes .botao { width: 100%; }
+    .topo__conteudo { min-height: 0; padding-top: .85rem; padding-bottom: .85rem; }
+}

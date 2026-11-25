@@ -3,10 +3,16 @@
 @section('title', 'Início')
 
 @section('content')
+    @php
+        $edicao = $edicao ?? null;
+        $inscricao = $inscricao ?? null;
+    @endphp
+
     @if(! $edicao)
         <div class="cartao vazio">
-            <h2>Nenhuma edição em andamento</h2>
+            <h1>Nenhuma edição em andamento</h1>
             <p class="texto-suave">Assim que uma nova Semana de Tecnologia for aberta, ela aparecerá aqui.</p>
+            <a class="botao botao--claro" href="{{ route('programacao.index') }}">Consultar programação</a>
         </div>
     @else
         @php
@@ -59,4 +65,3 @@
         </section>
     @endif
 @endsection
-

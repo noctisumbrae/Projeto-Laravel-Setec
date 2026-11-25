@@ -1,76 +1,78 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes da Inscrição (Equipe 3)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-4">
-        <h2>Detalhes da Inscrição</h2>
-        
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Inscrição #{{ $inscricao->id }}</h5>
-                
-                <p class="card-text">
-                    <strong>Usuário:</strong> {{ $inscricao->user->name }} ({{ $inscricao->user->email }})<br>
-                    <strong>Edição:</strong> {{ $inscricao->edicao->nome }} ({{ $inscricao->edicao->ano }})<br>
-                    <strong>Status:</strong> <span class="badge bg-{{ $inscricao->classe_status }}">{{ $inscricao->rotulo_status }}</span><br>
-                    <strong>Criado em:</strong> {{ $inscricao->created_at->format('d/m/Y H:i') }}
-                </p>
-                
-                <hr>
-                
-                <h6>Atividades ({{ $inscricao->atividades->count }})</h6>
-                
-                @if($inscricao->atividades->isEmpty())
-                <p>Nenhuma atividade selecionada.</p>
-                @else
-                <table class="table table-sm">
+@extends('layouts.app')
+
+@section('title', 'Detalhes da inscrição')
+
+@section('content')
+    <div class="pagina-cabecalho">
+        <div>
+            <p class="texto-suave">Área do participante</p>
+            <h1>{{ $inscricao->edicao->nome }}</h1>
+            <p class="texto-suave">Inscrição criada em {{ $inscricao->created_at->format('d/m/Y H:i') }}.</p>
+        </div>
+        <a href="{{ route('inscricoes.index') }}" class="botao botao--claro">Voltar</a>
+    </div>
+
+    <div class="grade grade--3">
+        <section class="cartao">
+            <div class="dado__rotulo">Situação da inscrição</div>
+            <div class="dado__valor"><span class="selo {{ $inscricao->classe_status }}">{{ $inscricao->rotulo_status }}</span></div>
+        </section>
+        <section class="cartao">
+            <div class="dado__rotulo">Edição</div>
+            <div class="dado__valor">{{ $inscricao->edicao->ano }}</div>
+        </section>
+        <section class="cartao">
+            <div class="dado__rotulo">Atividades escolhidas</div>
+            <div class="dado__valor">{{ $atividades->count() }}</div>
+        </section>
+    </div>
+
+    <section class="cartao mt">
+        <div class="pagina-cabecalho">
+            <div>
+                <h2>Atividades escolhidas</h2>
+                <p class="texto-suave">A confirmação de vagas depende do pagamento e da disponibilidade.</p>
+            </div>
+            @if($inscricao->editavel() && Route::has('inscricoes.atividades.edit'))
+                <a href="{{ route('inscricoes.atividades.edit', $inscricao) }}" class="botao">Ajustar atividades</a>
+            @endif
+        </div>
+
+        @if($atividades->isEmpty())
+            <div class="vazio">
+                <p class="texto-suave">Nenhuma atividade foi escolhida ainda.</p>
+            </div>
+        @else
+            <div class="tabela-wrap">
+                <table>
                     <thead>
                         <tr>
                             <th>Atividade</th>
-                            <th>Tipo</th>
-                            <th>Status</th>
-                            <th>Ações</th>
+                            <th>Data e horário</th>
+                            <th>Local</th>
+                            <th>Situação</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($inscricao->atividades as $atividade)
-                        <tr>
-                            <td>{{ $atividade->titulo }}</td>
-                            <td>{{ $atividade->tipo_label }}</td>
-                            <td>
-                                <span class="badge bg-{{ $atividade->pivot->status === 'confirmada' ? 'success' : 'warning' }}">
-                                    {{ ucfirst($atividade->pivot->status) }}
-                                </span>
-                            </td>
-                            <td>
-                                @can('inscricoes.deselecionar')
-                                <form action="{{ route('inscricoes.deselecionar', [$inscricao->id, $atividade->id]) }}" method="POST" style="display:inline">
-                                    @csrf @method('PATCH')
-                                    <button type="submit" class="btn btn-link btn-sm text-danger">Remover</button>
-                                </form>
-                                @endcan
-                            </td>
-                        </tr>
+                        @foreach($atividades as $atividade)
+                            @php
+                                $statusAtividade = \App\Models\Inscricao::apresentacaoStatusAtividade($atividade->pivot->status);
+                                $rotuloAtividade = $statusAtividade[0];
+                                $classeAtividade = $statusAtividade[1];
+                            @endphp
+                            <tr>
+                                <td>
+                                    <strong>{{ $atividade->titulo }}</strong>
+                                    <div class="campo__ajuda">{{ $atividade->rotulo_tipo }}</div>
+                                </td>
+                                <td>{{ $atividade->inicio->format('d/m/Y H:i') }}–{{ $atividade->fim->format('H:i') }}</td>
+                                <td>{{ $atividade->local->nome }}</td>
+                                <td><span class="selo {{ $classeAtividade }}">{{ $rotuloAtividade }}</span></td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
-                @endif
             </div>
-        </div>
-        
-        <div class="mt-4">
-            @can('inscricoes.confirmar')
-            <a href="{{ route('inscricoes.confirmar', $inscricao->id) }}" class="btn btn-success">Confirmar Inscrição</a>
-            @endcan
-            @can('inscricoes.cancelar')
-            <a href="{{ route('inscricoes.cancelar', $inscricao->id) }}" class="btn btn-danger">Cancelar Inscrição</a>
-            @endcan
-        </div>
-    </div>
-</body>
-</html>
+        @endif
+    </section>
+@endsection
