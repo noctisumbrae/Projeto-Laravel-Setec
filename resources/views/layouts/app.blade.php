@@ -27,10 +27,16 @@
                 @auth
                     <a href="{{ route('inscricoes.index') }}" class="{{ request()->routeIs('inscricoes.*') ? 'ativo' : '' }}">Minhas inscrições</a>
                     <a href="{{ route('perfil.edit') }}" class="{{ request()->routeIs('perfil.*') ? 'ativo' : '' }}">Meu perfil</a>
+                    @if (Route::has('certificados.historico'))
+                        <a href="{{ route('certificados.historico') }}" class="{{ request()->routeIs('certificados.historico*') ? 'ativo' : '' }}">Meus certificados</a>
+                    @endif
 
                     @if (auth()->user()->ehAdmin())
                         @if (Route::has('edicoes.index'))
                             <a href="{{ route('edicoes.index') }}" class="{{ request()->routeIs('edicoes.*') ? 'ativo' : '' }}">Administração</a>
+                        @endif
+                        @if (Route::has('admin.attendance.index'))
+                            <a href="{{ route('admin.attendance.index') }}" class="{{ request()->routeIs('admin.attendance.*') ? 'ativo' : '' }}">Presenças</a>
                         @endif
                         @if (Route::has('relatorios.index'))
                             <a href="{{ route('relatorios.index') }}" class="{{ request()->routeIs('relatorios.*') ? 'ativo' : '' }}">Relatórios</a>
