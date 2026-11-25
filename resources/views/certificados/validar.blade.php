@@ -2,6 +2,10 @@
 
 @section('title', 'Validar certificado')
 
+@section('head')
+    <meta name="robots" content="noindex, nofollow">
+@endsection
+
 @section('content')
     <div class="validacao-pagina cartao cartao--estreito">
         <p class="texto-suave">Autenticidade do documento</p>

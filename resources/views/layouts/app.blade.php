@@ -6,6 +6,7 @@
     <title>@yield('title', 'Semana de Tecnologia')</title>
     <link rel="stylesheet" href="{{ asset('css/sistema.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    @yield('head')
 </head>
 <body>
     <a class="site-skip" href="#conteudo">Pular para o conteúdo</a>
