@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\User;
 use App\Policies\InscricaoPolicy;
-use App\Models\Inscricao;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Gate::inscricao(function (User $user, $inscricao) {
+        Gate::define('inscricao', function (User $user, $inscricao) {
             return (new InscricaoPolicy($user))->view($user, $inscricao);
         });
     }
